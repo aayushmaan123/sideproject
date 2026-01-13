@@ -11,24 +11,46 @@ Stage 1: Stable Backend Foundation
 - Clean, production-ready structure
 """
 
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Dict
+
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from typing import Dict
 
+from app.api.health import router as health_router
 from app.core.config import settings
-from app.core.logging import setup_logging, get_logger
 from app.core.exceptions import (
     BaseAppException,
     base_exception_handler,
-    http_exception_handler,
-    general_exception_handler
+    general_exception_handler,
 )
-from app.api.health import router as health_router
+from app.core.logging import get_logger, setup_logging
 
 # Configure logging
 setup_logging()
 logger = get_logger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """
+    Application lifespan context manager.
+    
+    Handles startup and shutdown events:
+    - Startup: Initialize resources, connections, etc.
+    - Shutdown: Clean up resources
+    """
+    # Startup
+    logger.info(f"Starting {settings.APP_NAME}")
+    logger.info(f"Environment: {settings.ENV}")
+    logger.info(f"Debug mode: {settings.DEBUG}")
+    logger.info("Application startup complete")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down application")
+
 
 # Create FastAPI application
 app = FastAPI(
@@ -37,7 +59,8 @@ app = FastAPI(
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    lifespan=lifespan,
 )
 
 # Configure CORS middleware
@@ -55,34 +78,6 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 # Include API routers
 app.include_router(health_router)
-
-
-@app.on_event("startup")
-async def startup_event():
-    """
-    Application startup event handler.
-    
-    Executes when the application starts. Useful for:
-    - Initializing database connections (future)
-    - Loading ML models (future)
-    - Setting up background tasks (future)
-    """
-    logger.info(f"Starting {settings.APP_NAME}")
-    logger.info(f"Environment: {settings.ENV}")
-    logger.info(f"Debug mode: {settings.DEBUG}")
-    logger.info("Application startup complete")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """
-    Application shutdown event handler.
-    
-    Executes when the application shuts down. Useful for:
-    - Closing database connections (future)
-    - Cleanup tasks (future)
-    """
-    logger.info("Shutting down application")
 
 
 @app.get(

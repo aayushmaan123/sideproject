@@ -5,9 +5,10 @@ This module provides health check endpoints for monitoring and
 service discovery.
 """
 
+from datetime import datetime, timezone
 from typing import Dict
+
 from fastapi import APIRouter, status
-from datetime import datetime
 
 from app.core.config import settings
 
@@ -32,5 +33,5 @@ async def health_check() -> Dict[str, str]:
         "status": "healthy",
         "environment": settings.ENV,
         "app_name": settings.APP_NAME,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }

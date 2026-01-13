@@ -5,7 +5,8 @@ This module defines application-specific exceptions and provides
 FastAPI exception handlers for consistent error responses.
 """
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+
 from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
 
@@ -18,7 +19,12 @@ class BaseAppException(Exception):
     consistent error handling across the application.
     """
     
-    def __init__(self, message: str, status_code: int = 500, details: Dict[str, Any] = None):
+    def __init__(
+        self,
+        message: str,
+        status_code: int = 500,
+        details: Optional[Dict[str, Any]] = None
+    ):
         """
         Initialize the exception.
         
@@ -29,14 +35,14 @@ class BaseAppException(Exception):
         """
         self.message = message
         self.status_code = status_code
-        self.details = details or {}
+        self.details = details if details is not None else {}
         super().__init__(self.message)
 
 
 class ValidationException(BaseAppException):
     """Exception raised when input validation fails."""
     
-    def __init__(self, message: str, details: Dict[str, Any] = None):
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(
             message=message,
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -47,7 +53,7 @@ class ValidationException(BaseAppException):
 class NotFoundException(BaseAppException):
     """Exception raised when a requested resource is not found."""
     
-    def __init__(self, message: str, details: Dict[str, Any] = None):
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(
             message=message,
             status_code=status.HTTP_404_NOT_FOUND,
@@ -58,7 +64,7 @@ class NotFoundException(BaseAppException):
 class ServiceException(BaseAppException):
     """Exception raised when a service operation fails."""
     
-    def __init__(self, message: str, details: Dict[str, Any] = None):
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(
             message=message,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

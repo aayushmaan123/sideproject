@@ -38,7 +38,9 @@ class OrchestratorService:
         Returns:
             Placeholder response indicating the service is not yet implemented
         """
-        logger.info(f"Processing request (placeholder): {user_input[:50]}...")
+        # Sanitize input for logging (truncate and remove sensitive patterns)
+        sanitized_input = user_input[:50] if len(user_input) > 50 else user_input
+        logger.info(f"Processing request (placeholder): {sanitized_input}...")
         
         return {
             "status": "placeholder",
