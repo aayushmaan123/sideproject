@@ -2,7 +2,7 @@
 # Stage 1: Stable Backend Foundation
 
 # Core FastAPI and ASGI server
-fastapi==0.104.1
+fastapi==0.109.1
 uvicorn[standard]==0.24.0
 
 # Configuration and validation
@@ -10,7 +10,7 @@ pydantic==2.5.0
 pydantic-settings==2.1.0
 
 # CORS and security
-python-multipart==0.0.6
+python-multipart==0.0.18
 
 # Future dependencies (commented out for Stage 1)
 # Database (Stage 5)
