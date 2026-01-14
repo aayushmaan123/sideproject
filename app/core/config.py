@@ -21,13 +21,25 @@ class Settings(BaseSettings):
         APP_NAME: Application name
         ALLOWED_ORIGINS: List of allowed CORS origins
         LOG_LEVEL: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        
+        LLM_PROVIDER: LLM provider name (openai, anthropic, etc.)
+        LLM_API_KEY: API key for LLM provider
+        LLM_MODEL: Model name to use
+        LLM_TIMEOUT: Timeout for LLM requests in seconds
     """
     
+    # Application settings
     ENV: str = "development"
     DEBUG: bool = True
     APP_NAME: str = "AI Website Builder"
     ALLOWED_ORIGINS: Union[List[str], str] = "http://localhost:3000,http://localhost:8000"
     LOG_LEVEL: str = "INFO"
+    
+    # AI/LLM settings (Stage 2.2+)
+    LLM_PROVIDER: str = "openai"
+    LLM_API_KEY: str = "sk-test-key-not-real"  # Must be overridden in production
+    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_TIMEOUT: int = 30
     
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
