@@ -18,7 +18,7 @@ from app.core.ai_exceptions import (
 )
 from app.core.exceptions import NotFoundException, ValidationException
 from app.core.logging import get_logger
-from app.schemas.session import WebsiteRequirement
+from app.schemas.requirement import WebsiteRequirement
 from app.services.llm_client import llm_client
 from app.services.prompt_loader import prompt_loader
 from app.services.session_service import session_service
