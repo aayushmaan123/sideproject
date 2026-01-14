@@ -17,6 +17,7 @@ from typing import AsyncGenerator, Dict
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.conversation import router as conversation_router
 from app.api.health import router as health_router
 from app.core.config import settings
 from app.core.exceptions import (
@@ -78,6 +79,7 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 # Include API routers
 app.include_router(health_router)
+app.include_router(conversation_router)
 
 
 @app.get(
@@ -97,7 +99,7 @@ async def root() -> Dict[str, str]:
     return {
         "message": f"Welcome to {settings.APP_NAME}",
         "version": "0.1.0",
-        "stage": "Stage 1: Stable Backend Foundation",
+        "stage": "Stage 2.1: Session & Conversation State Management",
         "status": "operational",
         "docs": "/docs",
         "health": "/health"
