@@ -6,6 +6,7 @@ from AI conversation responses. It uses LLM to analyze conversation context
 and extract key information about the website being built.
 """
 
+import json
 import threading
 from typing import Dict, Optional
 from uuid import UUID
@@ -57,10 +58,10 @@ class RequirementService:
         ai_response: str
     ) -> WebsiteRequirement:
         """
-        Extract structured requirements from AI response.
+        Extract structured requirements from AI response using LLM.
         
-        This method analyzes the AI response and conversation context to
-        extract structured information about the website being built.
+        This method analyzes the full conversation context using an LLM
+        to extract structured information about the website being built.
         
         Args:
             session_id: The session identifier
@@ -85,43 +86,53 @@ class RequirementService:
         
         logger.info(f"Extracting requirements for session: {session_id}")
         
-        # Check if we already have requirements for this session
-        with self._lock:
-            existing_requirement = self._requirements.get(session_id)
-        
-        # For now, create a simple requirement structure
-        # In a real implementation, this would call LLM to extract structured data
-        # from the conversation history
-        
         # Build conversation context for LLM
         conversation_context = self._build_conversation_context(session)
         
-        # Create or update requirement
+        # Create or update requirement using LLM extraction
         try:
-            # In a full implementation, we would:
-            # 1. Load a specialized extraction prompt
-            # 2. Call LLM with conversation context
-            # 3. Parse LLM response into structured fields
+            # Load specialized extraction prompt
+            extraction_prompt = prompt_loader.load_prompt("requirement", "v1")
             
-            # For Stage 2.4.1, we'll create a basic requirement
-            # that can be enhanced in later stages
-            requirement = WebsiteRequirement(
-                session_id=session_id,
-                business_type=self._extract_business_type(conversation_context),
-                key_features=self._extract_key_features(conversation_context),
-                target_audience=None,  # To be extracted with LLM
-                design_preferences=None,  # To be extracted with LLM
-                additional_notes=f"Extracted from {len(session.messages)} messages"
+            # Build messages for LLM
+            messages = [
+                {
+                    "role": "user",
+                    "content": f"Extract structured requirements from this conversation:\n\n{conversation_context}"
+                }
+            ]
+            
+            # Call LLM with low temperature for deterministic extraction
+            logger.info(f"Calling LLM for requirement extraction (session: {session_id})")
+            llm_response = await llm_client.complete(
+                system_prompt=extraction_prompt,
+                messages=messages,
+                temperature=self.temperature,
+                max_tokens=500
             )
             
-            # Store requirement
+            # Parse LLM response as JSON
+            extracted_data = self._parse_llm_response(llm_response.content)
+            
+            # Create requirement from extracted data
+            requirement = WebsiteRequirement(
+                session_id=session_id,
+                business_type=extracted_data.get("business_type"),
+                key_features=extracted_data.get("key_features", []),
+                target_audience=extracted_data.get("target_audience"),
+                design_preferences=extracted_data.get("design_preferences"),
+                additional_notes=extracted_data.get("additional_notes")
+            )
+            
+            # Store requirement (thread-safe)
             with self._lock:
                 self._requirements[session_id] = requirement
             
             logger.info(
                 f"Requirements extracted for session {session_id}: "
                 f"business_type={requirement.business_type}, "
-                f"features={len(requirement.key_features)}"
+                f"features={len(requirement.key_features)}, "
+                f"tokens={llm_response.tokens_used}"
             )
             
             return requirement
@@ -175,69 +186,60 @@ class RequirementService:
         
         return "\n".join(context_parts)
     
-    def _extract_business_type(self, context: str) -> Optional[str]:
+    def _parse_llm_response(self, llm_content: str) -> Dict:
         """
-        Extract business type from conversation context.
-        
-        Simple keyword-based extraction. In production, this would use LLM.
+        Parse LLM response as JSON.
         
         Args:
-            context: Conversation context string
+            llm_content: The LLM-generated content to parse
             
         Returns:
-            Business type if detected, None otherwise
-        """
-        context_lower = context.lower()
-        
-        # Simple keyword matching (to be replaced with LLM extraction)
-        business_types = {
-            "bakery": ["bakery", "bakeries", "bake shop"],
-            "restaurant": ["restaurant", "cafe", "bistro", "diner"],
-            "portfolio": ["portfolio", "showcase", "personal site"],
-            "ecommerce": ["shop", "store", "ecommerce", "e-commerce", "sell"],
-            "blog": ["blog", "blogging", "articles"],
-            "corporate": ["business", "company", "corporate", "enterprise"]
-        }
-        
-        for btype, keywords in business_types.items():
-            if any(keyword in context_lower for keyword in keywords):
-                return btype
-        
-        return None
-    
-    def _extract_key_features(self, context: str) -> list[str]:
-        """
-        Extract key features from conversation context.
-        
-        Simple keyword-based extraction. In production, this would use LLM.
-        
-        Args:
-            context: Conversation context string
+            Parsed dictionary with requirement fields
             
-        Returns:
-            List of detected features
+        Raises:
+            LLMValidationException: If response is not valid JSON
         """
-        context_lower = context.lower()
-        features = []
-        
-        # Simple keyword matching (to be replaced with LLM extraction)
-        feature_keywords = {
-            "menu": ["menu", "food items", "offerings"],
-            "online ordering": ["order", "ordering", "cart", "checkout"],
-            "contact form": ["contact", "contact form", "get in touch"],
-            "gallery": ["gallery", "photos", "images", "showcase"],
-            "blog": ["blog", "articles", "posts", "news"],
-            "booking": ["booking", "reservation", "appointment"],
-            "payment": ["payment", "pay", "checkout", "stripe"],
-            "reviews": ["reviews", "testimonials", "feedback"]
-        }
-        
-        for feature, keywords in feature_keywords.items():
-            if any(keyword in context_lower for keyword in keywords):
-                if feature not in features:
-                    features.append(feature)
-        
-        return features
+        try:
+            # Clean up the response (remove markdown code blocks if present)
+            content = llm_content.strip()
+            if content.startswith("```json"):
+                content = content[7:]
+            if content.startswith("```"):
+                content = content[3:]
+            if content.endswith("```"):
+                content = content[:-3]
+            content = content.strip()
+            
+            # Parse JSON
+            data = json.loads(content)
+            
+            # Validate required structure
+            if not isinstance(data, dict):
+                raise LLMValidationException(
+                    "LLM response is not a JSON object",
+                    details={"response": llm_content[:200]}
+                )
+            
+            # Ensure key_features is a list
+            if "key_features" in data and not isinstance(data["key_features"], list):
+                data["key_features"] = []
+            
+            return data
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse LLM response as JSON: {e}")
+            raise LLMValidationException(
+                f"Invalid JSON in LLM response: {e}",
+                details={"response": llm_content[:200], "error": str(e)}
+            )
+        except LLMValidationException:
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error parsing LLM response: {e}")
+            raise LLMValidationException(
+                f"Failed to parse LLM response: {type(e).__name__}",
+                details={"error": str(e)}
+            )
 
 
 # Global requirement service instance
