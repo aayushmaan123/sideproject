@@ -6,8 +6,10 @@ validation.
 """
 
 from app.schemas.session import (
+    AIMessageResponse,
     Message,
     MessageRole,
+    SendAIMessageRequest,
     SendMessageRequest,
     Session,
     SessionResponse,
@@ -16,8 +18,10 @@ from app.schemas.session import (
 )
 
 __all__ = [
+    "AIMessageResponse",
     "Message",
     "MessageRole",
+    "SendAIMessageRequest",
     "SendMessageRequest",
     "Session",
     "SessionResponse",

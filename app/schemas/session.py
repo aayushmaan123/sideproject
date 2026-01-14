@@ -2,12 +2,12 @@
 Session and conversation schemas.
 
 This module defines Pydantic models for session management and
-conversation state tracking in Stage 2.1.
+conversation state tracking in Stage 2.1 and AI responses in Stage 2.3.
 """
 
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
@@ -168,5 +168,76 @@ class SessionResponse(BaseModel):
                     ],
                     "structured_requirements": {}
                 }
+            }
+        }
+
+
+class SendAIMessageRequest(BaseModel):
+    """
+    Request to send a message and get an AI response.
+    
+    Attributes:
+        session_id: The session to add the message to
+        user_message: The user's message content
+    """
+    
+    session_id: UUID = Field(..., description="Session identifier")
+    user_message: str = Field(
+        ...,
+        min_length=1,
+        max_length=5000,
+        description="User's message content"
+    )
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "session_id": "550e8400-e29b-41d4-a716-446655440000",
+                "user_message": "It should have a menu and online ordering"
+            }
+        }
+
+
+class AIMessageResponse(BaseModel):
+    """
+    Response containing AI-generated message and updated session.
+    
+    Attributes:
+        ai_response: The AI-generated response text
+        session: The updated session with both user and AI messages
+        model: The LLM model used
+        tokens_used: Number of tokens consumed (if available)
+    """
+    
+    ai_response: str = Field(..., description="AI-generated response")
+    session: Session = Field(..., description="Updated session state")
+    model: str = Field(..., description="LLM model used")
+    tokens_used: Optional[int] = Field(None, description="Tokens consumed")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "ai_response": "Great! A bakery website with a menu and online ordering. What type of bakery do you run?",
+                "session": {
+                    "session_id": "550e8400-e29b-41d4-a716-446655440000",
+                    "created_at": "2024-01-14T10:30:00.000000+00:00",
+                    "updated_at": "2024-01-14T10:35:00.000000+00:00",
+                    "status": "collecting",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "I want to build a website",
+                            "timestamp": "2024-01-14T10:30:00.000000+00:00"
+                        },
+                        {
+                            "role": "system",
+                            "content": "Great! What type of website are you building?",
+                            "timestamp": "2024-01-14T10:31:00.000000+00:00"
+                        }
+                    ],
+                    "structured_requirements": {}
+                },
+                "model": "gpt-4o-mini",
+                "tokens_used": 150
             }
         }
