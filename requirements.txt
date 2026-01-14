@@ -1,0 +1,34 @@
+# Python dependencies for AI Website Builder
+# Stage 1: Stable Backend Foundation
+
+# Core FastAPI and ASGI server
+fastapi==0.109.1
+uvicorn[standard]==0.24.0
+
+# Configuration and validation
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# CORS and security
+python-multipart==0.0.18
+
+# AI/ML (Stage 2.2+)
+openai==1.54.0
+httpx==0.27.0
+
+# Future dependencies
+# Database (Stage 5)
+# sqlalchemy==2.0.23
+# alembic==1.12.1
+
+# Additional AI tools (Stage 2.3+)
+# langchain==0.0.340
+
+# Authentication (Stage 6)
+# python-jose[cryptography]==3.3.0
+# passlib[bcrypt]==1.7.4
+
+# Additional utilities (Stage 2+)
+# aiofiles==23.2.1
+# python-dotenv==1.0.0
+# httpx==0.25.1
