@@ -15,6 +15,7 @@ from app.schemas.session import (
     SessionResponse,
     SessionStatus,
     StartConversationRequest,
+    WebsiteRequirement,
 )
 
 __all__ = [
@@ -27,5 +28,6 @@ __all__ = [
     "SessionResponse",
     "SessionStatus",
     "StartConversationRequest",
+    "WebsiteRequirement",
 ]
 
