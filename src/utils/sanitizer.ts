@@ -10,6 +10,9 @@
  * 3. Strip unsupported characters (HTML tags, script tags)
  * 4. Remove emojis and other special characters that may break parsing
  * 
+ * Note: This sanitization is designed for preprocessing text before AI analysis,
+ * not for HTML rendering. For rendering contexts, use a dedicated library like DOMPurify.
+ * 
  * @param text - The raw user input text
  * @returns Sanitized text ready for AI processing
  */
@@ -18,17 +21,25 @@ export function sanitizeText(text: string): string {
   let sanitized = text.trim();
 
   // Step 2: Strip HTML tags and script tags to prevent XSS
-  // Remove <script> tags and their content
-  sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  // Multiple passes to handle nested and malformed tags
+  // First pass: Remove script tags with any attributes and whitespace variations
+  sanitized = sanitized.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, '');
   
-  // Remove all HTML tags
-  sanitized = sanitized.replace(/<[^>]*>/g, '');
+  // Second pass: Remove all remaining HTML tags
+  // Repeat multiple times to handle nested tags
+  for (let i = 0; i < 3; i++) {
+    sanitized = sanitized.replace(/<[^>]*>/g, '');
+  }
+  
+  // Third pass: Remove any remaining angle brackets that might be part of incomplete tags
+  sanitized = sanitized.replace(/[<>]/g, '');
 
   // Step 3: Remove potentially dangerous characters
   // Remove null bytes
   sanitized = sanitized.replace(/\0/g, '');
   
-  // Remove control characters except newlines and tabs
+  // Remove control characters except LF(\n), CR(\r), and TAB(\t)
+  // This includes characters like \x00-\x08, \x0B (vertical tab), \x0C (form feed), \x0E-\x1F, and \x7F (delete)
   // eslint-disable-next-line no-control-regex
   sanitized = sanitized.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '');
 

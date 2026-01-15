@@ -38,8 +38,11 @@ export function validateInput(
   // Validate text
   const textValidation = validateText(text);
   if (!textValidation.isValid) {
+    // Ensure session_id is a string for logging, even if it might be invalid
+    const sessionIdForLog = typeof session_id === 'string' ? session_id : String(session_id);
+    
     Logger.logInvalidRequest(
-      session_id,
+      sessionIdForLog,
       textValidation.error || 'Invalid text',
       'Validation failed'
     );

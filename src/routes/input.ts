@@ -31,6 +31,9 @@ const router = Router();
  * {
  *   "error": "Invalid input: <reason>"
  * }
+ * 
+ * Note: Rate limiting should be implemented in production environments.
+ * For Stage 4.1.1, basic validation and sanitization are the focus.
  */
 router.post(
   '/input',

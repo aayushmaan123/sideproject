@@ -96,6 +96,25 @@ describe('Sanitizer', () => {
       const result = sanitizeText(input);
       expect(result).toBe('Hello world');
     });
+
+    test('should handle script tag with whitespace variations and remove angle brackets', () => {
+      // Test edge case: malformed script tags with unusual whitespace
+      // The multi-pass approach removes tags and then all remaining angle brackets
+      const result = sanitizeText('<script\t\n bar>alert(1)</script\t\n bar>Hello');
+      // Should remove all angle brackets making it safe
+      expect(result).not.toContain('<');
+      expect(result).not.toContain('>');
+      // The word "alert" may remain but without script context it's harmless
+      expect(result).toContain('Hello');
+    });
+
+    test('should handle malformed and nested script tags', () => {
+      const result = sanitizeText('<<script>alert(1)</script>script>alert(2)<</script>/script>Hello');
+      // Multiple passes should remove all tags and angle brackets
+      expect(result).not.toContain('<');
+      expect(result).not.toContain('>');
+      expect(result).toContain('Hello');
+    });
   });
 
   describe('normalizeCase', () => {
