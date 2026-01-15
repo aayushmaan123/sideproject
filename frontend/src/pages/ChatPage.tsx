@@ -22,23 +22,40 @@ export default function ChatPage() {
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
-      maxWidth: '900px',
+      maxWidth: '1000px',
       margin: '0 auto',
+      backgroundColor: 'var(--color-bg-primary)',
+      boxShadow: 'var(--shadow-lg)',
     }}>
       {/* Header */}
       <div style={{
-        padding: '16px 20px',
-        borderBottom: '1px solid #ddd',
-        backgroundColor: 'white',
+        padding: 'var(--spacing-xl) var(--spacing-2xl)',
+        borderBottom: '1px solid var(--color-gray-200)',
+        backgroundColor: 'var(--color-bg-primary)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: 'var(--spacing-md)',
       }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>
+          <h1 style={{ 
+            margin: 0, 
+            fontSize: 'var(--font-size-2xl)', 
+            fontWeight: 'var(--font-weight-bold)',
+            color: 'var(--color-text-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-sm)',
+          }}>
+            <span style={{ fontSize: 'var(--font-size-3xl)' }}>🤖</span>
             AI Website Builder
           </h1>
-          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666' }}>
+          <p style={{ 
+            margin: 'var(--spacing-xs) 0 0 0', 
+            fontSize: 'var(--font-size-sm)', 
+            color: 'var(--color-text-secondary)',
+          }}>
             Tell me about your website needs
           </p>
         </div>
@@ -46,14 +63,30 @@ export default function ChatPage() {
           onClick={handleExtractRequirements}
           disabled={messages.length === 0 || isExtracting}
           style={{
-            padding: '8px 16px',
-            backgroundColor: messages.length === 0 || isExtracting ? '#ccc' : '#646cff',
+            padding: 'var(--spacing-md) var(--spacing-xl)',
+            backgroundColor: messages.length === 0 || isExtracting ? 'var(--color-gray-300)' : 'var(--color-primary)',
             color: 'white',
             border: 'none',
-            borderRadius: '6px',
+            borderRadius: 'var(--radius-md)',
             cursor: messages.length === 0 || isExtracting ? 'not-allowed' : 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-semibold)',
+            transition: 'all var(--transition-fast)',
+            boxShadow: messages.length === 0 || isExtracting ? 'none' : 'var(--shadow-sm)',
+          }}
+          onMouseEnter={(e) => {
+            if (messages.length > 0 && !isExtracting) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (messages.length > 0 && !isExtracting) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+            }
           }}
         >
           {isExtracting ? 'Extracting...' : 'View Requirements'}
@@ -62,7 +95,7 @@ export default function ChatPage() {
 
       {/* Error Display */}
       {error && (
-        <div style={{ padding: '0 20px' }}>
+        <div style={{ padding: '0 var(--spacing-2xl)' }}>
           <ErrorMessage message={error.message} />
         </div>
       )}

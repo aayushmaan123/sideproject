@@ -8,6 +8,7 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   const [input, setInput] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSend = () => {
     if (input.trim() && !disabled) {
@@ -26,39 +27,63 @@ export default function ChatInput({ onSend, disabled = false }: ChatInputProps) 
   return (
     <div style={{
       display: 'flex',
-      gap: '8px',
-      padding: '12px',
-      borderTop: '1px solid #ddd',
-      backgroundColor: 'white',
+      gap: 'var(--spacing-md)',
+      padding: 'var(--spacing-lg) var(--spacing-2xl)',
+      borderTop: '1px solid var(--color-gray-200)',
+      backgroundColor: 'var(--color-bg-primary)',
+      boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.05)',
     }}>
       <input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyPress={handleKeyPress}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         disabled={disabled}
         placeholder={disabled ? 'Sending...' : 'Type your message...'}
         style={{
           flex: 1,
-          padding: '10px 14px',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          fontSize: '14px',
+          padding: 'var(--spacing-md) var(--spacing-lg)',
+          border: `2px solid ${isFocused ? 'var(--color-primary)' : 'var(--color-gray-200)'}`,
+          borderRadius: 'var(--radius-lg)',
+          fontSize: 'var(--font-size-sm)',
           outline: 'none',
+          transition: 'border-color var(--transition-fast), box-shadow var(--transition-fast)',
+          backgroundColor: disabled ? 'var(--color-gray-100)' : 'var(--color-bg-primary)',
+          color: 'var(--color-text-primary)',
+          boxShadow: isFocused ? '0 0 0 3px var(--color-primary-light)' : 'none',
         }}
       />
       <button
         onClick={handleSend}
         disabled={disabled || !input.trim()}
         style={{
-          padding: '10px 20px',
-          backgroundColor: disabled || !input.trim() ? '#ccc' : '#646cff',
+          padding: 'var(--spacing-md) var(--spacing-2xl)',
+          backgroundColor: disabled || !input.trim() ? 'var(--color-gray-300)' : 'var(--color-primary)',
           color: 'white',
           border: 'none',
-          borderRadius: '8px',
+          borderRadius: 'var(--radius-lg)',
           cursor: disabled || !input.trim() ? 'not-allowed' : 'pointer',
-          fontSize: '14px',
-          fontWeight: '500',
+          fontSize: 'var(--font-size-sm)',
+          fontWeight: 'var(--font-weight-semibold)',
+          transition: 'all var(--transition-fast)',
+          boxShadow: disabled || !input.trim() ? 'none' : 'var(--shadow-sm)',
+          transform: disabled || !input.trim() ? 'none' : 'translateY(0)',
+        }}
+        onMouseEnter={(e) => {
+          if (!disabled && input.trim()) {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!disabled && input.trim()) {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+          }
         }}
       >
         Send

@@ -20,19 +20,42 @@ export default function ChatWindow({ messages, isLoading }: ChatWindowProps) {
     <div style={{
       flex: 1,
       overflowY: 'auto',
-      padding: '20px',
-      backgroundColor: '#fafafa',
+      padding: 'var(--spacing-2xl)',
+      backgroundColor: 'var(--color-gray-50)',
+      backgroundImage: 'linear-gradient(to bottom, var(--color-gray-50) 0%, var(--color-bg-secondary) 100%)',
     }}>
       {messages.length === 0 ? (
         <div style={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           height: '100%',
-          color: '#999',
-          fontSize: '16px',
+          color: 'var(--color-text-tertiary)',
+          fontSize: 'var(--font-size-lg)',
+          textAlign: 'center',
+          padding: 'var(--spacing-2xl)',
         }}>
-          Start a conversation to build your website
+          <div style={{
+            fontSize: 'var(--font-size-4xl)',
+            marginBottom: 'var(--spacing-lg)',
+          }}>
+            💬
+          </div>
+          <p style={{ 
+            margin: 0, 
+            fontWeight: 'var(--font-weight-medium)',
+            color: 'var(--color-text-secondary)',
+          }}>
+            Start a conversation to build your website
+          </p>
+          <p style={{ 
+            margin: 'var(--spacing-sm) 0 0 0',
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text-tertiary)',
+          }}>
+            Tell me about your business and requirements
+          </p>
         </div>
       ) : (
         <>
@@ -40,7 +63,7 @@ export default function ChatWindow({ messages, isLoading }: ChatWindowProps) {
             <ChatMessage key={message.id} message={message} />
           ))}
           {isLoading && (
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: 'var(--spacing-md)' }}>
               <LoadingSpinner />
             </div>
           )}

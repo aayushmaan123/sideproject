@@ -18,92 +18,167 @@ export default function RequirementPreviewPage() {
 
   return (
     <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      padding: '20px',
+      minHeight: '100vh',
+      backgroundColor: 'var(--color-bg-secondary)',
+      padding: 'var(--spacing-2xl)',
     }}>
-      {/* Header */}
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '24px',
+        maxWidth: '900px',
+        margin: '0 auto',
       }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '600' }}>
-            Website Requirements
-          </h1>
-          <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#666' }}>
-            Extracted from your conversation
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/')}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#646cff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-          }}
-        >
-          Back to Chat
-        </button>
-      </div>
-
-      {/* Error Display */}
-      {error && <ErrorMessage message={error.message} />}
-
-      {/* Loading State */}
-      {isLoading && (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
-          <LoadingSpinner />
-          <p style={{ marginTop: '16px', color: '#666' }}>
-            Loading requirements...
-          </p>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!isLoading && !error && !requirements && (
+        {/* Header */}
         <div style={{
-          textAlign: 'center',
-          padding: '60px 20px',
-          backgroundColor: '#f9f9f9',
-          borderRadius: '8px',
-          border: '2px dashed #ddd',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: 'var(--spacing-3xl)',
+          flexWrap: 'wrap',
+          gap: 'var(--spacing-lg)',
         }}>
-          <p style={{ fontSize: '18px', color: '#666', margin: '0 0 12px 0' }}>
-            No requirements found
-          </p>
-          <p style={{ fontSize: '14px', color: '#999', margin: '0 0 20px 0' }}>
-            Start a conversation in the chat to generate requirements
-          </p>
+          <div>
+            <h1 style={{ 
+              margin: 0, 
+              fontSize: 'var(--font-size-3xl)', 
+              fontWeight: 'var(--font-weight-bold)',
+              color: 'var(--color-text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-sm)',
+            }}>
+              <span style={{ fontSize: 'var(--font-size-4xl)' }}>📄</span>
+              Website Requirements
+            </h1>
+            <p style={{ 
+              margin: 'var(--spacing-sm) 0 0 0', 
+              fontSize: 'var(--font-size-base)', 
+              color: 'var(--color-text-secondary)',
+            }}>
+              Extracted from your conversation
+            </p>
+          </div>
           <button
             onClick={() => navigate('/')}
             style={{
-              padding: '10px 20px',
-              backgroundColor: '#646cff',
+              padding: 'var(--spacing-md) var(--spacing-xl)',
+              backgroundColor: 'var(--color-primary)',
               color: 'white',
               border: 'none',
-              borderRadius: '6px',
+              borderRadius: 'var(--radius-md)',
               cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-semibold)',
+              transition: 'all var(--transition-fast)',
+              boxShadow: 'var(--shadow-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-sm)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
             }}
           >
-            Go to Chat
+            <span>←</span>
+            Back to Chat
           </button>
         </div>
-      )}
 
-      {/* Requirements Display */}
-      {!isLoading && !error && requirements && (
-        <RequirementList requirements={requirements} />
-      )}
+        {/* Error Display */}
+        {error && <ErrorMessage message={error.message} />}
+
+        {/* Loading State */}
+        {isLoading && (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: 'var(--spacing-4xl)',
+            backgroundColor: 'var(--color-bg-primary)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-md)',
+          }}>
+            <LoadingSpinner />
+            <p style={{ 
+              marginTop: 'var(--spacing-xl)', 
+              color: 'var(--color-text-secondary)',
+              fontSize: 'var(--font-size-base)',
+            }}>
+              Loading requirements...
+            </p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && !requirements && (
+          <div style={{
+            textAlign: 'center',
+            padding: 'var(--spacing-4xl) var(--spacing-2xl)',
+            backgroundColor: 'var(--color-bg-primary)',
+            borderRadius: 'var(--radius-lg)',
+            border: '2px dashed var(--color-gray-300)',
+            boxShadow: 'var(--shadow-md)',
+          }}>
+            <div style={{ fontSize: '64px', marginBottom: 'var(--spacing-lg)' }}>
+              📋
+            </div>
+            <p style={{ 
+              fontSize: 'var(--font-size-xl)', 
+              color: 'var(--color-text-secondary)', 
+              margin: '0 0 var(--spacing-sm) 0',
+              fontWeight: 'var(--font-weight-semibold)',
+            }}>
+              No requirements found
+            </p>
+            <p style={{ 
+              fontSize: 'var(--font-size-sm)', 
+              color: 'var(--color-text-tertiary)', 
+              margin: '0 0 var(--spacing-2xl) 0',
+            }}>
+              Start a conversation in the chat to generate requirements
+            </p>
+            <button
+              onClick={() => navigate('/')}
+              style={{
+                padding: 'var(--spacing-md) var(--spacing-2xl)',
+                backgroundColor: 'var(--color-primary)',
+                color: 'white',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                cursor: 'pointer',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-semibold)',
+                transition: 'all var(--transition-fast)',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
+            >
+              Go to Chat
+            </button>
+          </div>
+        )}
+
+        {/* Requirements Display */}
+        {!isLoading && !error && requirements && (
+          <div style={{
+            animation: 'fadeIn 0.4s ease-out',
+          }}>
+            <RequirementList requirements={requirements} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

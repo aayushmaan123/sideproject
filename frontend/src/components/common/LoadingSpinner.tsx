@@ -1,25 +1,29 @@
 export default function LoadingSpinner() {
   return (
     <div style={{
-      display: 'flex',
-      justifyContent: 'center',
+      display: 'inline-flex',
       alignItems: 'center',
-      padding: '20px',
+      gap: 'var(--spacing-sm)',
+      padding: 'var(--spacing-md) var(--spacing-lg)',
+      backgroundColor: 'var(--color-bg-primary)',
+      borderRadius: 'var(--radius-lg)',
+      boxShadow: 'var(--shadow-sm)',
     }}>
       <div style={{
-        border: '4px solid #f3f3f3',
-        borderTop: '4px solid #646cff',
+        width: '20px',
+        height: '20px',
+        border: '3px solid var(--color-gray-200)',
+        borderTop: '3px solid var(--color-primary)',
         borderRadius: '50%',
-        width: '40px',
-        height: '40px',
-        animation: 'spin 1s linear infinite',
+        animation: 'spin 0.8s linear infinite',
       }} />
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
+      <span style={{
+        fontSize: 'var(--font-size-sm)',
+        color: 'var(--color-text-secondary)',
+        fontWeight: 'var(--font-weight-medium)',
+      }}>
+        Thinking...
+      </span>
     </div>
   );
 }

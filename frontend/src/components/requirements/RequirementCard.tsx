@@ -8,41 +8,61 @@ export default function RequirementCard({ label, value }: RequirementCardProps) 
   
   return (
     <div style={{
-      backgroundColor: 'white',
-      border: '1px solid #e0e0e0',
-      borderRadius: '8px',
-      padding: '16px',
-      marginBottom: '12px',
-    }}>
+      backgroundColor: 'var(--color-bg-primary)',
+      border: '1px solid var(--color-gray-200)',
+      borderRadius: 'var(--radius-lg)',
+      padding: 'var(--spacing-xl)',
+      marginBottom: 'var(--spacing-lg)',
+      boxShadow: 'var(--shadow-sm)',
+      transition: 'all var(--transition-base)',
+      animation: 'fadeIn 0.4s ease-out',
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.borderColor = 'var(--color-primary-light)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.borderColor = 'var(--color-gray-200)';
+    }}
+    >
       <h3 style={{
-        margin: '0 0 8px 0',
-        fontSize: '14px',
-        fontWeight: '600',
-        color: '#646cff',
+        margin: '0 0 var(--spacing-md) 0',
+        fontSize: 'var(--font-size-xs)',
+        fontWeight: 'var(--font-weight-semibold)',
+        color: 'var(--color-primary)',
         textTransform: 'uppercase',
-        letterSpacing: '0.5px',
+        letterSpacing: '0.8px',
       }}>
         {label}
       </h3>
       {displayValue.length === 1 ? (
         <p style={{
           margin: 0,
-          fontSize: '15px',
-          color: '#333',
-          lineHeight: '1.5',
+          fontSize: 'var(--font-size-base)',
+          color: 'var(--color-text-primary)',
+          lineHeight: 'var(--line-height-relaxed)',
+          fontWeight: 'var(--font-weight-medium)',
         }}>
           {displayValue[0]}
         </p>
       ) : (
         <ul style={{
           margin: 0,
-          paddingLeft: '20px',
-          fontSize: '15px',
-          color: '#333',
-          lineHeight: '1.8',
+          paddingLeft: 'var(--spacing-xl)',
+          fontSize: 'var(--font-size-sm)',
+          color: 'var(--color-text-primary)',
+          lineHeight: 'var(--line-height-relaxed)',
         }}>
           {displayValue.map((item, index) => (
-            <li key={index}>{item}</li>
+            <li key={index} style={{ 
+              marginBottom: 'var(--spacing-xs)',
+              paddingLeft: 'var(--spacing-xs)',
+            }}>
+              {item}
+            </li>
           ))}
         </ul>
       )}
