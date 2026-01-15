@@ -5,6 +5,7 @@ import { useRequirements } from '../hooks/useRequirements';
 import ChatWindow from '../components/chat/ChatWindow';
 import ChatInput from '../components/chat/ChatInput';
 import ErrorMessage from '../components/common/ErrorMessage';
+import ThemeToggle from '../components/common/ThemeToggle';
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -59,38 +60,42 @@ export default function ChatPage() {
             Tell me about your website needs
           </p>
         </div>
-        <button
-          onClick={handleExtractRequirements}
-          disabled={messages.length === 0 || isExtracting}
-          style={{
-            padding: 'var(--spacing-md) var(--spacing-xl)',
-            backgroundColor: messages.length === 0 || isExtracting ? 'var(--color-gray-300)' : 'var(--color-primary)',
-            color: 'white',
-            border: 'none',
-            borderRadius: 'var(--radius-md)',
-            cursor: messages.length === 0 || isExtracting ? 'not-allowed' : 'pointer',
-            fontSize: 'var(--font-size-sm)',
-            fontWeight: 'var(--font-weight-semibold)',
-            transition: 'all var(--transition-fast)',
-            boxShadow: messages.length === 0 || isExtracting ? 'none' : 'var(--shadow-sm)',
-          }}
-          onMouseEnter={(e) => {
-            if (messages.length > 0 && !isExtracting) {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (messages.length > 0 && !isExtracting) {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-            }
-          }}
-        >
-          {isExtracting ? 'Extracting...' : 'View Requirements'}
-        </button>
+        <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+          <ThemeToggle />
+          <button
+            onClick={handleExtractRequirements}
+            disabled={messages.length === 0 || isExtracting}
+            aria-label="View extracted requirements"
+            style={{
+              padding: 'var(--spacing-md) var(--spacing-xl)',
+              backgroundColor: messages.length === 0 || isExtracting ? 'var(--color-gray-300)' : 'var(--color-primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: messages.length === 0 || isExtracting ? 'not-allowed' : 'pointer',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-semibold)',
+              transition: 'all var(--transition-fast)',
+              boxShadow: messages.length === 0 || isExtracting ? 'none' : 'var(--shadow-sm)',
+            }}
+            onMouseEnter={(e) => {
+              if (messages.length > 0 && !isExtracting) {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (messages.length > 0 && !isExtracting) {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }
+            }}
+          >
+            {isExtracting ? 'Extracting...' : 'View Requirements'}
+          </button>
+        </div>
       </div>
 
       {/* Error Display */}

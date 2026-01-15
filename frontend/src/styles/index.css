@@ -85,6 +85,51 @@
 }
 
 /* ================================
+   Dark Mode Theme
+   ================================ */
+[data-theme="dark"] {
+  /* Colors - Dark Mode */
+  --color-primary: #6B8FFF;
+  --color-primary-dark: #5B7FFF;
+  --color-primary-light: #1E3A8A;
+  
+  /* Neutral Colors - Dark Mode */
+  --color-gray-50: #1F2937;
+  --color-gray-100: #374151;
+  --color-gray-200: #4B5563;
+  --color-gray-300: #6B7280;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #D1D5DB;
+  --color-gray-600: #E5E7EB;
+  --color-gray-700: #F3F4F6;
+  --color-gray-800: #F9FAFB;
+  --color-gray-900: #FFFFFF;
+  
+  /* Text Colors - Dark Mode */
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-tertiary: #9CA3AF;
+  
+  /* Background Colors - Dark Mode */
+  --color-bg-primary: #1F2937;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #374151;
+  
+  /* Shadows - Dark Mode (lighter for visibility) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth theme transition */
+* {
+  transition: background-color var(--transition-base), 
+              color var(--transition-base),
+              border-color var(--transition-base);
+}
+
+/* ================================
    CSS Reset & Base Styles
    ================================ */
 *, *::before, *::after {

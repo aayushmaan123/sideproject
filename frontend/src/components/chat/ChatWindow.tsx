@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { Message } from '../../types/conversation.types';
 import ChatMessage from './ChatMessage';
-import LoadingSpinner from '../common/LoadingSpinner';
+import TypingIndicator from '../common/TypingIndicator';
 
 interface ChatWindowProps {
   messages: Message[];
@@ -64,7 +64,7 @@ export default function ChatWindow({ messages, isLoading }: ChatWindowProps) {
           ))}
           {isLoading && (
             <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: 'var(--spacing-md)' }}>
-              <LoadingSpinner />
+              <TypingIndicator />
             </div>
           )}
           <div ref={messagesEndRef} />

@@ -5,6 +5,7 @@ import { useRequirements } from '../hooks/useRequirements';
 import RequirementList from '../components/requirements/RequirementList';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
+import ThemeToggle from '../components/common/ThemeToggle';
 
 export default function RequirementPreviewPage() {
   const navigate = useNavigate();
@@ -56,37 +57,41 @@ export default function RequirementPreviewPage() {
               Extracted from your conversation
             </p>
           </div>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              padding: 'var(--spacing-md) var(--spacing-xl)',
-              backgroundColor: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-md)',
-              cursor: 'pointer',
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 'var(--font-weight-semibold)',
-              transition: 'all var(--transition-fast)',
-              boxShadow: 'var(--shadow-sm)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--spacing-sm)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-            }}
-          >
-            <span>←</span>
-            Back to Chat
-          </button>
+          <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+            <ThemeToggle />
+            <button
+              onClick={() => navigate('/')}
+              aria-label="Back to chat"
+              style={{
+                padding: 'var(--spacing-md) var(--spacing-xl)',
+                backgroundColor: 'var(--color-primary)',
+                color: 'white',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                cursor: 'pointer',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-semibold)',
+                transition: 'all var(--transition-fast)',
+                boxShadow: 'var(--shadow-sm)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-sm)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
+            >
+              <span>←</span>
+              Back to Chat
+            </button>
+          </div>
         </div>
 
         {/* Error Display */}
