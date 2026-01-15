@@ -12,7 +12,7 @@ const DB_PATH = process.env.DB_PATH || './data/requirements.db';
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: DB_PATH,
-  logging: (msg) => Logger.info('Database query', { query: msg }),
+  logging: (msg: string): void => Logger.info('Database query', { query: msg }),
   define: {
     timestamps: true, // Automatically add createdAt and updatedAt
     underscored: false, // Use camelCase instead of snake_case

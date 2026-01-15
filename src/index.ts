@@ -1,13 +1,15 @@
 /**
  * Main application entry point
- * AI Website Builder Backend - Stages 4.1.1 & 4.1.2
+ * AI Website Builder Backend - Stages 4.1.1, 4.1.2 & 4.2
  */
 
 import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
 import inputRoutes from './routes/input';
 import extractRoutes from './routes/extract';
+import requirementsRoutes from './routes/requirements';
 import { Logger } from './utils/logger';
+import { testConnection, syncDatabase } from './database/config';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -23,13 +25,14 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'AI Website Builder - Input Validation & AI Requirement Extraction',
+    service: 'AI Website Builder - Input Validation, AI Extraction & Storage',
   });
 });
 
 // API routes
 app.use('/api', inputRoutes);
 app.use('/api', extractRoutes);
+app.use('/api', requirementsRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
@@ -46,15 +49,34 @@ app.use((err: Error, _req: Request, res: Response) => {
   });
 });
 
-// Start server (only if not in test environment)
+// Initialize database and start server (only if not in test environment)
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    Logger.info(`Server running on port ${PORT}`);
-    console.log(`🚀 AI Website Builder Backend started on http://localhost:${PORT}`);
-    console.log(`📝 Stage 4.1.1 - Input validation: POST http://localhost:${PORT}/api/input`);
-    console.log(`🤖 Stage 4.1.2 - AI extraction: POST http://localhost:${PORT}/api/extract`);
-    console.log(`🏥 Health check: GET http://localhost:${PORT}/health`);
-  });
+  (async () => {
+    try {
+      // Test database connection
+      const connected = await testConnection();
+      if (!connected) {
+        throw new Error('Database connection failed');
+      }
+
+      // Sync database models
+      await syncDatabase();
+
+      // Start server
+      app.listen(PORT, () => {
+        Logger.info(`Server running on port ${PORT}`);
+        console.log(`🚀 AI Website Builder Backend started on http://localhost:${PORT}`);
+        console.log(`📝 Stage 4.1.1 - Input validation: POST http://localhost:${PORT}/api/input`);
+        console.log(`🤖 Stage 4.1.2 - AI extraction: POST http://localhost:${PORT}/api/extract`);
+        console.log(`💾 Stage 4.2 - Save requirements: POST http://localhost:${PORT}/api/requirements`);
+        console.log(`📖 Stage 4.2 - Get requirements: GET http://localhost:${PORT}/api/requirements/:session_id`);
+        console.log(`🏥 Health check: GET http://localhost:${PORT}/health`);
+      });
+    } catch (error) {
+      Logger.error('Failed to initialize application', error);
+      process.exit(1);
+    }
+  })();
 }
 
 export default app;
