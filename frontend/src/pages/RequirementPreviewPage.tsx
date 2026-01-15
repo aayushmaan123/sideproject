@@ -6,6 +6,7 @@ import RequirementList from '../components/requirements/RequirementList';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ThemeToggle from '../components/common/ThemeToggle';
+import ConnectionStatusIndicator from '../components/common/ConnectionStatusIndicator';
 
 export default function RequirementPreviewPage() {
   const navigate = useNavigate();
@@ -57,7 +58,8 @@ export default function RequirementPreviewPage() {
               Extracted from your conversation
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', flexWrap: 'wrap' }}>
+            <ConnectionStatusIndicator />
             <ThemeToggle />
             <button
               onClick={() => navigate('/')}

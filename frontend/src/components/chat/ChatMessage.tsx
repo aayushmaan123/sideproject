@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import type { Message } from '../../types/conversation.types';
 import CopyButton from '../common/CopyButton';
 
@@ -6,7 +6,7 @@ interface ChatMessageProps {
   message: Message;
 }
 
-export default function ChatMessage({ message }: ChatMessageProps) {
+function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const [showCopy, setShowCopy] = useState(false);
   
@@ -61,3 +61,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
     </div>
   );
 }
+
+// Memoize to prevent unnecessary re-renders
+export default memo(ChatMessage, (prevProps, nextProps) => {
+  return prevProps.message.id === nextProps.message.id &&
+         prevProps.message.content === nextProps.message.content;
+});

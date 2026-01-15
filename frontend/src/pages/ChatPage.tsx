@@ -6,6 +6,7 @@ import ChatWindow from '../components/chat/ChatWindow';
 import ChatInput from '../components/chat/ChatInput';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ThemeToggle from '../components/common/ThemeToggle';
+import ConnectionStatusIndicator from '../components/common/ConnectionStatusIndicator';
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -60,7 +61,8 @@ export default function ChatPage() {
             Tell me about your website needs
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', flexWrap: 'wrap' }}>
+          <ConnectionStatusIndicator />
           <ThemeToggle />
           <button
             onClick={handleExtractRequirements}
