@@ -6,13 +6,16 @@ import { Sequelize } from 'sequelize';
 import { Logger } from '../utils/logger';
 
 // Database file path (SQLite)
-const DB_PATH = process.env.DB_PATH || './data/requirements.db';
+// Use in-memory database for tests, file-based for other environments
+const DB_PATH = process.env.NODE_ENV === 'test' 
+  ? ':memory:' 
+  : (process.env.DB_PATH || './data/requirements.db');
 
 // Create Sequelize instance with SQLite
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: DB_PATH,
-  logging: (msg: string): void => Logger.info('Database query', { query: msg }),
+  logging: process.env.NODE_ENV === 'test' ? false : (msg: string): void => Logger.info('Database query', { query: msg }),
   define: {
     timestamps: true, // Automatically add createdAt and updatedAt
     underscored: false, // Use camelCase instead of snake_case
