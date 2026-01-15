@@ -1,10 +1,12 @@
 /**
  * Main application entry point
- * AI Website Builder Backend - Stage 4.1.1: Input Validation & Preprocessing
+ * AI Website Builder Backend - Stages 4.1.1 & 4.1.2
  */
 
+import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
 import inputRoutes from './routes/input';
+import extractRoutes from './routes/extract';
 import { Logger } from './utils/logger';
 
 const app: Application = express();
@@ -21,12 +23,13 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'AI Website Builder - Input Validation & Preprocessing',
+    service: 'AI Website Builder - Input Validation & AI Requirement Extraction',
   });
 });
 
 // API routes
 app.use('/api', inputRoutes);
+app.use('/api', extractRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
@@ -48,7 +51,8 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     Logger.info(`Server running on port ${PORT}`);
     console.log(`🚀 AI Website Builder Backend started on http://localhost:${PORT}`);
-    console.log(`📝 API endpoint: POST http://localhost:${PORT}/api/input`);
+    console.log(`📝 Stage 4.1.1 - Input validation: POST http://localhost:${PORT}/api/input`);
+    console.log(`🤖 Stage 4.1.2 - AI extraction: POST http://localhost:${PORT}/api/extract`);
     console.log(`🏥 Health check: GET http://localhost:${PORT}/health`);
   });
 }
