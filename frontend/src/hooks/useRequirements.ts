@@ -23,7 +23,6 @@ export function useRequirements(sessionId: string) {
 
       if (response.error) {
         setError(response.error);
-        setIsLoading(false);
         return;
       }
 
@@ -53,7 +52,6 @@ export function useRequirements(sessionId: string) {
 
       if (response.error) {
         setError(response.error);
-        setIsLoading(false);
         return;
       }
 

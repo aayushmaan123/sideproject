@@ -38,7 +38,6 @@ export function useConversation(sessionId: string) {
 
         if (response.error) {
           setError(response.error);
-          setIsLoading(false);
           return;
         }
 
