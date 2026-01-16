@@ -8,6 +8,7 @@ import express, { Application, Request, Response } from 'express';
 import inputRoutes from './routes/input';
 import extractRoutes from './routes/extract';
 import requirementsRoutes from './routes/requirements';
+import templatesRoutes from './routes/templates';
 import { Logger } from './utils/logger';
 import { testConnection, syncDatabase } from './database/config';
 import { seedTemplates } from './database/seedTemplates';
@@ -34,6 +35,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api', inputRoutes);
 app.use('/api', extractRoutes);
 app.use('/api', requirementsRoutes);
+app.use('/api', templatesRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
