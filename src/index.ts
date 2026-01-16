@@ -1,6 +1,6 @@
 /**
  * Main application entry point
- * AI Website Builder Backend - Stages 4.1.1, 4.1.2, 4.2 & 4.3
+ * AI Website Builder Backend - Stages 4.1.1, 4.1.2, 4.2, 4.3 & 4.4.1
  */
 
 import 'dotenv/config';
@@ -9,6 +9,7 @@ import inputRoutes from './routes/input';
 import extractRoutes from './routes/extract';
 import requirementsRoutes from './routes/requirements';
 import templatesRoutes from './routes/templates';
+import pagesRoutes from './routes/pages';
 import { Logger } from './utils/logger';
 import { testConnection, syncDatabase } from './database/config';
 import { seedTemplates } from './database/seedTemplates';
@@ -27,7 +28,7 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'AI Website Builder - Input Validation, AI Extraction, Storage & Template Selection',
+    service: 'AI Website Builder - Input Validation, AI Extraction, Storage, Template Selection & Page Generation',
   });
 });
 
@@ -36,6 +37,7 @@ app.use('/api', inputRoutes);
 app.use('/api', extractRoutes);
 app.use('/api', requirementsRoutes);
 app.use('/api', templatesRoutes);
+app.use('/api/pages', pagesRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
