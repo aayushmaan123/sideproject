@@ -1,6 +1,6 @@
 /**
  * Main application entry point
- * AI Website Builder Backend - Stages 4.1.1, 4.1.2, 4.2, 4.3 & 4.4.1
+ * AI Website Builder Backend - Stages 4.1.1, 4.1.2, 4.2, 4.3, 4.4.1 & 4.4.2
  */
 
 import 'dotenv/config';
@@ -10,6 +10,7 @@ import extractRoutes from './routes/extract';
 import requirementsRoutes from './routes/requirements';
 import templatesRoutes from './routes/templates';
 import pagesRoutes from './routes/pages';
+import contentRoutes from './routes/content';
 import { Logger } from './utils/logger';
 import { testConnection, syncDatabase } from './database/config';
 import { seedTemplates } from './database/seedTemplates';
@@ -28,7 +29,7 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'AI Website Builder - Input Validation, AI Extraction, Storage, Template Selection & Page Generation',
+    service: 'AI Website Builder - Input Validation, AI Extraction, Storage, Template Selection, Page & Content Generation',
   });
 });
 
@@ -38,6 +39,7 @@ app.use('/api', extractRoutes);
 app.use('/api', requirementsRoutes);
 app.use('/api', templatesRoutes);
 app.use('/api/pages', pagesRoutes);
+app.use('/api/content', contentRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
@@ -79,6 +81,8 @@ if (process.env.NODE_ENV !== 'test') {
         console.log(`💾 Stage 4.2 - Save requirements: POST http://localhost:${PORT}/api/requirements`);
         console.log(`📖 Stage 4.2 - Get requirements: GET http://localhost:${PORT}/api/requirements/:session_id`);
         console.log(`🎨 Stage 4.3 - Template selection: GET http://localhost:${PORT}/api/templates/select/:session_id`);
+        console.log(`📄 Stage 4.4.1 - Generate pages: POST http://localhost:${PORT}/api/pages/generate`);
+        console.log(`✏️  Stage 4.4.2 - Generate content: POST http://localhost:${PORT}/api/content/generate`);
         console.log(`🏥 Health check: GET http://localhost:${PORT}/health`);
       });
     } catch (error) {
