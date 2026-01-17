@@ -61,6 +61,38 @@ export default function RequirementPreviewPage() {
           <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', flexWrap: 'wrap' }}>
             <ConnectionStatusIndicator />
             <ThemeToggle />
+            {requirements && (
+              <button
+                onClick={() => navigate(`/preview/${sessionId}/default-template-id`)}
+                aria-label="Preview generated site"
+                style={{
+                  padding: 'var(--spacing-md) var(--spacing-xl)',
+                  backgroundColor: 'var(--color-success)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  transition: 'all var(--transition-fast)',
+                  boxShadow: 'var(--shadow-sm)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--spacing-sm)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                }}
+              >
+                <span>🌐</span>
+                Preview Site
+              </button>
+            )}
             <button
               onClick={() => navigate('/')}
               aria-label="Back to chat"

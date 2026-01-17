@@ -71,15 +71,16 @@ export async function getRenderSchema(
 
     // Return result
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch render schema';
     console.error('[RenderAPI] Error fetching render schema:', error);
     
     // Return error response
     return {
       data: undefined,
       error: {
-        message: error.message || 'Failed to fetch render schema',
-        status: error.status || 500,
+        message: errorMessage,
+        status: 500,
       },
     };
   }

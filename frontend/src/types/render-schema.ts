@@ -323,15 +323,15 @@ export function isHeroContent(content: SectionContent): content is HeroContent {
 }
 
 export function isFeaturesContent(content: SectionContent): content is FeaturesContent {
-  return 'title' in content && 'features' in content && Array.isArray((content as any).features);
+  return 'title' in content && 'features' in content && Array.isArray((content as FeaturesContent).features);
 }
 
 export function isPricingContent(content: SectionContent): content is PricingContent {
-  return 'title' in content && 'plans' in content && Array.isArray((content as any).plans);
+  return 'title' in content && 'plans' in content && Array.isArray((content as PricingContent).plans);
 }
 
 export function isTestimonialsContent(content: SectionContent): content is TestimonialsContent {
-  return 'title' in content && 'testimonials' in content && Array.isArray((content as any).testimonials);
+  return 'title' in content && 'testimonials' in content && Array.isArray((content as TestimonialsContent).testimonials);
 }
 
 export function isAboutContent(content: SectionContent): content is AboutContent {
@@ -343,11 +343,11 @@ export function isContactContent(content: SectionContent): content is ContactCon
 }
 
 export function isFAQContent(content: SectionContent): content is FAQContent {
-  return 'title' in content && 'questions' in content && Array.isArray((content as any).questions);
+  return 'title' in content && 'questions' in content && Array.isArray((content as FAQContent).questions);
 }
 
 export function isProductCatalogContent(content: SectionContent): content is ProductCatalogContent {
-  return 'title' in content && 'products' in content && Array.isArray((content as any).products);
+  return 'title' in content && 'products' in content && Array.isArray((content as ProductCatalogContent).products);
 }
 
 export function isMenuContent(content: SectionContent): content is MenuContent {
@@ -355,11 +355,11 @@ export function isMenuContent(content: SectionContent): content is MenuContent {
 }
 
 export function isGalleryContent(content: SectionContent): content is GalleryContent {
-  return 'title' in content && 'items' in content && Array.isArray((content as any).items);
+  return 'title' in content && 'items' in content && Array.isArray((content as GalleryContent).items);
 }
 
 export function isBlogContent(content: SectionContent): content is BlogContent {
-  return 'title' in content && 'posts' in content && Array.isArray((content as any).posts);
+  return 'title' in content && 'posts' in content && Array.isArray((content as BlogContent).posts);
 }
 
 export function isCTAContent(content: SectionContent): content is CTAContent {
@@ -369,13 +369,13 @@ export function isCTAContent(content: SectionContent): content is CTAContent {
 /**
  * Schema version validation
  */
-export function isValidRenderSchema(data: any): data is RenderSchema {
+export function isValidRenderSchema(data: unknown): data is RenderSchema {
   return (
-    data &&
+    !!data &&
     typeof data === 'object' &&
     'render_version' in data &&
     'site_metadata' in data &&
     'pages' in data &&
-    Array.isArray(data.pages)
+    Array.isArray((data as RenderSchema).pages)
   );
 }
