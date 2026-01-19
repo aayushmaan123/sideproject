@@ -1,8 +1,8 @@
 /**
- * FAQ Section Renderer
+ * FAQ Section Renderer with Accordion Functionality
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { FAQContent } from '../../../types/render-schema';
 
 interface FAQSectionProps {
@@ -11,6 +11,18 @@ interface FAQSectionProps {
 
 export const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
   const { title, subtitle, questions } = content;
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const handleToggle = (index: number): void => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleToggle(index);
+    }
+  };
 
   return (
     <div className="faq-section">
@@ -19,12 +31,33 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
         {subtitle && <p className="faq-subtitle">{subtitle}</p>}
       </div>
       <div className="faq-list">
-        {questions.map((item, index) => (
-          <div key={index} className="faq-item">
-            <h3 className="faq-question">{item.question}</h3>
-            <p className="faq-answer">{item.answer}</p>
-          </div>
-        ))}
+        {questions.map((item, index) => {
+          const isExpanded = expandedIndex === index;
+          const answerId = `faq-answer-${index}`;
+
+          return (
+            <div key={index} className="faq-item">
+              <button
+                className="faq-question"
+                onClick={() => handleToggle(index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                aria-expanded={isExpanded}
+                aria-controls={answerId}
+                type="button"
+              >
+                <span>{item.question}</span>
+                <span className="faq-icon" aria-hidden="true">
+                  {isExpanded ? '−' : '+'}
+                </span>
+              </button>
+              {isExpanded && (
+                <div id={answerId} className="faq-answer">
+                  <p>{item.answer}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
