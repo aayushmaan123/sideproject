@@ -34,10 +34,12 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
         {questions.map((item, index) => {
           const isExpanded = expandedIndex === index;
           const answerId = `faq-answer-${index}`;
+          const questionId = `faq-question-${index}`;
 
           return (
             <div key={index} className="faq-item">
               <button
+                id={questionId}
                 className="faq-question"
                 onClick={() => handleToggle(index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
@@ -46,15 +48,21 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
                 type="button"
               >
                 <span>{item.question}</span>
-                <span className="faq-icon" aria-hidden="true">
+                <span className={`faq-icon${isExpanded ? ' open' : ''}`} aria-hidden="true">
                   {isExpanded ? '−' : '+'}
                 </span>
               </button>
-              {isExpanded && (
-                <div id={answerId} className="faq-answer">
+              <div
+                id={answerId}
+                className={`faq-answer${isExpanded ? ' open' : ''}`}
+                aria-hidden={!isExpanded}
+                aria-labelledby={questionId}
+                role="region"
+              >
+                <div className="faq-answer-content">
                   <p>{item.answer}</p>
                 </div>
-              )}
+              </div>
             </div>
           );
         })}

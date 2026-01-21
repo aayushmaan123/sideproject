@@ -67,6 +67,7 @@ export class ContentGeneratorService {
       const pageSections = new Map<SectionType, any>();
 
       for (const section of page.sections) {
+        console.log(`Generating content for section type: '${section.type}'`);
         const content = this.generateSectionContent(
           section,
           requirement,

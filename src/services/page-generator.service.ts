@@ -39,28 +39,21 @@ const FEATURE_SECTIONS: Record<string, string> = {
   'menu': 'menu',
   'products': 'product-catalog',
   'product catalog': 'product-catalog',
-  'shopping cart': 'cart',
-  'cart': 'cart',
-  'payment': 'payment',
-  'checkout': 'checkout',
-  'reservations': 'reservation-form',
-  'booking': 'reservation-form',
-  'gallery': 'image-gallery',
-  'portfolio': 'portfolio-grid',
-  'projects': 'project-showcase',
+  'gallery': 'gallery',
+  'portfolio': 'gallery',
+  'projects': 'gallery',
   'testimonials': 'testimonials',
-  'pricing': 'pricing-table',
-  'features': 'feature-list',
-  'contact': 'contact-form',
-  'contact form': 'contact-form',
-  'about': 'about-section',
-  'team': 'team-section',
-  'blog': 'blog-grid',
-  'posts': 'blog-grid',
-  'categories': 'category-list',
-  'comments': 'comment-section',
-  'cta': 'call-to-action',
-  'newsletter': 'newsletter-signup',
+  'pricing': 'pricing',
+  'features': 'features',
+  'contact': 'contact',
+  'contact form': 'contact',
+  'about': 'about',
+  'team': 'about',
+  'blog': 'blog',
+  'posts': 'blog',
+  'cta': 'cta',
+  'faq': 'faq',
+  'questions': 'faq',
 };
 
 /**
@@ -156,7 +149,7 @@ export class PageGeneratorService {
     // Generate pages
     const pages: Page[] = pageNames.map((pageName) => {
       const slug = pageName === 'Home' ? '/' : `/${pageName.toLowerCase().replace(/\s+/g, '-')}`;
-      
+
       return {
         page_id: uuidv4(),
         name: pageName,
@@ -192,29 +185,27 @@ export class PageGeneratorService {
 
     // Map features to sections based on page name
     const pageLower = pageName.toLowerCase();
-    
+
     // Add sections based on required features
     for (const feature of requiredFeatures) {
       const featureLower = feature.toLowerCase().trim();
       const sectionType = FEATURE_SECTIONS[featureLower];
 
       // Check if this section belongs to this page
-      const belongsToPage = 
-        (pageLower === 'home' && ['hero', 'feature-list', 'testimonials', 'call-to-action'].includes(sectionType || '')) ||
-        (pageLower === 'products' && ['product-catalog', 'cart'].includes(sectionType || '')) ||
+      const belongsToPage =
+        (pageLower === 'home' && ['hero', 'features', 'testimonials', 'cta'].includes(sectionType || '')) ||
+        (pageLower === 'products' && ['product-catalog'].includes(sectionType || '')) ||
         (pageLower === 'menu' && sectionType === 'menu') ||
-        (pageLower === 'cart' && sectionType === 'cart') ||
-        (pageLower === 'checkout' && ['checkout', 'payment'].includes(sectionType || '')) ||
-        (pageLower === 'reservations' && sectionType === 'reservation-form') ||
-        (pageLower === 'gallery' && sectionType === 'image-gallery') ||
-        (pageLower === 'projects' && ['portfolio-grid', 'project-showcase'].includes(sectionType || '')) ||
-        (pageLower === 'portfolio' && sectionType === 'portfolio-grid') ||
-        (pageLower === 'pricing' && sectionType === 'pricing-table') ||
-        (pageLower === 'features' && sectionType === 'feature-list') ||
-        (pageLower === 'posts' && sectionType === 'blog-grid') ||
-        (pageLower === 'categories' && sectionType === 'category-list') ||
-        (pageLower === 'about' && ['about-section', 'team-section'].includes(sectionType || '')) ||
-        (pageLower === 'contact' && sectionType === 'contact-form');
+        (pageLower === 'gallery' && sectionType === 'gallery') ||
+        (pageLower === 'projects' && sectionType === 'gallery') ||
+        (pageLower === 'portfolio' && sectionType === 'gallery') ||
+        (pageLower === 'pricing' && sectionType === 'pricing') ||
+        (pageLower === 'features' && sectionType === 'features') ||
+        (pageLower === 'posts' && sectionType === 'blog') ||
+        (pageLower === 'about' && sectionType === 'about') ||
+        (pageLower === 'contact' && sectionType === 'contact') ||
+        (pageLower === 'faq' && sectionType === 'faq') ||
+        (pageLower === 'home' && sectionType === 'faq');
 
       if (sectionType && belongsToPage) {
         // Avoid duplicate sections
@@ -232,10 +223,18 @@ export class PageGeneratorService {
 
     // Add default sections if none generated
     if (sections.length === 0) {
-      const defaultType = pageLower === 'home' ? 'hero' : 'content';
+
+      // Changed fallback to 'about' instead of generic 'content' which is invalid?
+      // Wait, 'content' is definitely not in SECTION_TYPES.
+      // Let's use 'about' or 'features' as safe defaults? Or maybe just 'hero' if home.
+      // If none generated, we used to add 'content'. 'content' IS NOT IN SECTION_TYPES.
+      // 'blog', 'about', 'contact' are valid. 
+      // Let's use 'about' as a safe default for non-home pages.
+      const safeDefault = pageLower === 'home' ? 'hero' : 'about';
+
       sections.push({
         section_id: uuidv4(),
-        type: defaultType,
+        type: safeDefault,
         order: 1,
         required_features: [],
         content_hints: `${pageName} page content with ${designPrefs} design.`,
@@ -243,10 +242,10 @@ export class PageGeneratorService {
     }
 
     // Add call-to-action section for Home page if not already present
-    if (pageName === 'Home' && !sections.some(s => s.type === 'call-to-action')) {
+    if (pageName === 'Home' && !sections.some(s => s.type === 'cta')) {
       sections.push({
         section_id: uuidv4(),
-        type: 'call-to-action',
+        type: 'cta',
         order: order++,
         required_features: [],
         content_hints: `Call-to-action section encouraging user engagement with ${designPrefs} design.`,
@@ -262,26 +261,17 @@ export class PageGeneratorService {
   private generateContentHint(sectionType: string, feature: string, designPrefs: string): string {
     const hints: Record<string, string> = {
       'hero': `Hero banner with compelling headline and ${designPrefs} visual design`,
-      'feature-list': `Showcase key features: ${feature} with ${designPrefs} layout`,
+      'features': `Showcase key features: ${feature} with ${designPrefs} layout`,
       'product-catalog': `Product grid displaying ${feature} with ${designPrefs} cards`,
-      'cart': `Shopping cart interface with ${designPrefs} design for easy checkout`,
-      'payment': `Secure payment integration section with ${designPrefs} styling`,
-      'checkout': `Checkout form with ${designPrefs} design for smooth transactions`,
       'menu': `Menu display for ${feature} with ${designPrefs} presentation`,
-      'reservation-form': `Reservation booking form with ${designPrefs} design`,
-      'image-gallery': `Image gallery showcasing ${feature} with ${designPrefs} grid layout`,
-      'portfolio-grid': `Portfolio grid displaying ${feature} with ${designPrefs} cards`,
-      'project-showcase': `Project showcase featuring ${feature} with ${designPrefs} design`,
+      'gallery': `Image gallery showcasing ${feature} with ${designPrefs} grid layout`,
       'testimonials': `Customer testimonials with ${designPrefs} layout`,
-      'pricing-table': `Pricing tiers for ${feature} with ${designPrefs} comparison table`,
-      'contact-form': `Contact form with ${designPrefs} design for user inquiries`,
-      'about-section': `About section describing ${feature} with ${designPrefs} storytelling`,
-      'team-section': `Team member profiles with ${designPrefs} card layout`,
-      'blog-grid': `Blog post grid for ${feature} with ${designPrefs} cards`,
-      'category-list': `Category navigation for ${feature} with ${designPrefs} design`,
-      'comment-section': `Comment section for ${feature} with ${designPrefs} threading`,
-      'call-to-action': `Call-to-action encouraging engagement with ${designPrefs} button design`,
-      'newsletter-signup': `Newsletter signup form with ${designPrefs} input styling`,
+      'pricing': `Pricing tiers for ${feature} with ${designPrefs} comparison table`,
+      'contact': `Contact form with ${designPrefs} design for user inquiries`,
+      'about': `About section describing ${feature} with ${designPrefs} storytelling`,
+      'blog': `Blog post grid for ${feature} with ${designPrefs} cards`,
+      'cta': `Call-to-action encouraging engagement with ${designPrefs} button design`,
+      'faq': `Frequency asked questions for ${feature} with ${designPrefs} accordion style`,
     };
 
     return hints[sectionType] || `${sectionType} section for ${feature} with ${designPrefs} design`;
